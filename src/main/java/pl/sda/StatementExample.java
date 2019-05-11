@@ -1,5 +1,6 @@
 package pl.sda;
 
+import javax.swing.plaf.nimbus.State;
 import java.sql.*;
 
 /**
@@ -29,7 +30,7 @@ public class StatementExample {
                 "primary key (id) )");
     }
 
-    public void fillTableWith5Employees() throws SQLException {
+    public void fillTableWith5EmployeesUsingPreparedStatement() throws SQLException {
         PreparedStatement preparedStatement = connection
                 .prepareStatement("INSERT INTO Employee (name, salary) VALUES (?, ?)");
         for (int i = 0; i < 5; i++) {
@@ -39,7 +40,7 @@ public class StatementExample {
         }
     }
 
-    public void deleteFromTableEmployees(int value) throws SQLException {
+    public void deleteFromTableEmployeesUsingPreparedStatement(int value) throws SQLException {
         PreparedStatement preparedStatement = connection
                 .prepareStatement("DELETE FROM Employee WHERE salary = " + value);
         preparedStatement.execute();
@@ -54,9 +55,9 @@ public class StatementExample {
     public static void main(String[] args) throws ClassNotFoundException, SQLException {
         StatementExample statementExample = new StatementExample();
 //        statementExample.createTable();
-//        statementExample.fillTableWith5Employees();
-//        statementExample.deleteFromTableEmployees(4000);
-        statementExample.deleteTable("employee");
+//        statementExample.fillTableWith5EmployeesUsingPreparedStatement();
+        statementExample.deleteFromTableEmployeesUsingPreparedStatement(4000);
+//        statementExample.deleteTable("employee");
     }
 
 }
