@@ -2,6 +2,8 @@ package pl.sda;
 
 import javax.swing.plaf.nimbus.State;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Remigiusz Zudzin
@@ -9,7 +11,7 @@ import java.sql.*;
 public class StatementExample {
 
     final Connection connection = DriverManager.getConnection(
-            "jdbc:mysql://localhost:3306/java6?serverTimezone=UTC",
+            "jdbc:mysql://localhost:3306/java6?serverTimezone=UTC&logger=com.mysql.cj.log.Slf4JLogger&profileSQL=true",
             "root",
             "root");
 
@@ -52,12 +54,47 @@ public class StatementExample {
         preparedStatement.execute();
     }
 
+    public void tests() throws SQLException {
+        PreparedStatement preparedStatement = connection
+                .prepareStatement("SELECT id, name, productionYear FROM movies");
+        ResultSet resultSet = preparedStatement.executeQuery();
+        while (resultSet.next()) {
+            int id = resultSet.getInt(1);
+            String name = resultSet.getString(2);
+            int productionYear = resultSet.getInt(3);
+            System.out.println("id = " + id + " name = " + name + " productionYear = " + productionYear);
+        }
+    }
+
+    List<Employee> exercises(String query) throws SQLException {
+        List<Employee> list = new ArrayList<>();
+        PreparedStatement preparedStatement = connection
+                .prepareStatement(query);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        while (resultSet.next()) {
+            int id = resultSet.getInt("id");
+            String name = resultSet.getString("name");
+            int salary = resultSet.getInt("salary");
+            Employee employee = new Employee(id, name, salary);
+            list.add(employee);
+        }
+        return list;
+    }
+
     public static void main(String[] args) throws ClassNotFoundException, SQLException {
         StatementExample statementExample = new StatementExample();
 //        statementExample.createTable();
 //        statementExample.fillTableWith5EmployeesUsingPreparedStatement();
-        statementExample.deleteFromTableEmployeesUsingPreparedStatement(4000);
+//        statementExample.deleteFromTableEmployeesUsingPreparedStatement(4000);
 //        statementExample.deleteTable("employee");
+//        statementExample.tests();
+//        statementExample.exercise13();
+        String exercise13 = "SELECT * FROM employee";
+        String exercise14 = "SELECT * FROM employee ORDER BY salary DESC";
+        String exercise15 = "SELECT * FROM employee WHERE salary > 2000";
+        String exercise16 = "SELECT * FROM employee WHERE name LIKE " + "'J%'";
+        statementExample.exercises(exercise13).stream().forEach(System.out::println);
+
     }
 
 }
